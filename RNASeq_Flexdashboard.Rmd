@@ -21,8 +21,6 @@ editor_options:
 ---
 
 ```{r libraries, message=FALSE, include=FALSE}
-library(biomaRt)
-library(TCGAbiolinks)
 library(shiny)
 library(shinyWidgets)
 library(dplyr)
@@ -246,7 +244,7 @@ anno_reactive <- reactive({
   if (is.null(vsd)) {
     return(NULL)
   }
-  colData(vsd)[,c("tissue_type","ajcc_pathologic_stage","primary_diagnosis","race", "ethnicity")] %>% as.data.frame()
+  colData(vsd)[,c("tissue_type","ajcc_pathologic_stage","primary_diagnosis","race", "ethnicity","vital_status")] %>% as.data.frame()
 })
 ```
 
@@ -400,7 +398,7 @@ race_colors <- c(
   "AMERICAN INDIAN OR ALASKA NATIVE" = "#d62728",
   "NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER" = "#9467bd",
   "OTHER" = "#8c564b",
-  "UNKNOWN" = "#e377c2"
+  "NOT REPORTED" = "#e377c2"
 )
 
 ethnicity_colors <- c(
@@ -490,6 +488,16 @@ specimen_counts_reactive <- reactive({
   colnames(specimen_counts) <- c("Specimen Type", "Count")
   return(specimen_counts)
 })
+
+vital_counts_reactive <- reactive({
+  coldata<-coldata_reactive()
+  if(is.null(coldata)){
+    return(NULL)
+  }
+  vital_counts <- as.data.frame(table(coldata$vital_status))
+  colnames(vital_counts) <- c("Vital Status", "Count")
+  return(vital_counts)
+})
 ```
 
 Row {data-height="1000"}
@@ -543,7 +551,7 @@ renderPlotly({
   if (is.null(pca_data)) {
       plotly::plotly_empty() %>%
         layout(
-          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 patients,\nthen click 'Apply Samples' to view the PCA plot.</sub>", 
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 patients,\nthen click 'Run Analysis' to view the PCA plot.</sub>", 
           font = list(size = 16)),
           xaxis = list(visible = FALSE),
           yaxis = list(visible = FALSE)
@@ -583,7 +591,7 @@ renderPlotly({
     if (is.null(sep_pca_data)) {
       plotly::plotly_empty() %>%
         layout(
-          title = list(text = "📊 Not ENough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Apply Samples' to view the PCA plot.</sub>", 
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Run Analysis' to view the PCA plot.</sub>", 
           font = list(size = 16)),
           xaxis = list(visible = FALSE),
           yaxis = list(visible = FALSE)
@@ -622,7 +630,7 @@ renderPlotly({
   if (is.null(sep_pca_data)) {
       plotly::plotly_empty() %>%
         layout(
-          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Apply Samples' to view the PCA plot.</sub>", 
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Run Analysis' to view the PCA plot.</sub>", 
           font = list(size = 16)),
           xaxis = list(visible = FALSE),
           yaxis = list(visible = FALSE)
@@ -665,7 +673,7 @@ renderPlotly({
     if (is.null(specimen_counts)) {
       plotly::plotly_empty() %>%
         layout(
-          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Apply Samples' to view the PCA plot.</sub>", 
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Run Analysis' to view the pie chart.</sub>", 
           font = list(size = 16)),
           xaxis = list(visible = FALSE),
           yaxis = list(visible = FALSE)
@@ -696,7 +704,7 @@ renderPlotly({
     if (is.null(race_counts)) {
       plotly::plotly_empty() %>%
         layout(
-          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Apply Samples' to view the PCA plot.</sub>", 
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Run Analysis' to view the pie chart.</sub>", 
           font = list(size = 16)),
           xaxis = list(visible = FALSE),
           yaxis = list(visible = FALSE)
@@ -729,7 +737,7 @@ renderPlotly({
     if (is.null(ethnicity_counts)) {
       plotly::plotly_empty() %>%
         layout(
-          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Apply Samples' to view the PCA plot.</sub>", 
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Run Analysis' to view the pie chart.</sub>", 
           font = list(size = 16)),
           xaxis = list(visible = FALSE),
           yaxis = list(visible = FALSE)
@@ -762,7 +770,7 @@ renderPlotly({
     if (is.null(gender_counts)) {
       plotly::plotly_empty() %>%
         layout(
-          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Apply Samples' to view the PCA plot.</sub>", 
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Run Analysis' to view the pie chart.</sub>", 
           font = list(size = 16)),
           xaxis = list(visible = FALSE),
           yaxis = list(visible = FALSE)
@@ -795,7 +803,7 @@ renderPlotly({
     if (is.null(stage_counts)) {
       plotly::plotly_empty() %>%
         layout(
-          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Apply Samples' to view the PCA plot.</sub>", 
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Run Analysis' to view the pie chart.</sub>", 
           font = list(size = 16)),
           xaxis = list(visible = FALSE),
           yaxis = list(visible = FALSE)
@@ -827,7 +835,7 @@ renderPlotly({
     if (is.null(primary_counts)) {
       plotly::plotly_empty() %>%
         layout(
-          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Apply Samples' to view the PCA plot.</sub>", 
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Run Analysis' to view the pie chart.</sub>", 
           font = list(size = 16)),
           xaxis = list(visible = FALSE),
           yaxis = list(visible = FALSE)
@@ -844,6 +852,38 @@ renderPlotly({
       ) %>%
         layout(
           title = "Primary Diagnosis Distribution",
+          showlegend = TRUE
+        )
+    }
+})
+```
+
+### Vital Status
+
+```{r}
+renderPlotly({
+    vital_counts <- vital_counts_reactive()
+    
+    if (is.null(vital_counts)) {
+      plotly::plotly_empty() %>%
+        layout(
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 samples per condition,\nthen click 'Run Analysis' to view the pie chart.</sub>", 
+          font = list(size = 16)),
+          xaxis = list(visible = FALSE),
+          yaxis = list(visible = FALSE)
+        )
+    } else {
+      plot_ly(
+        vital_counts,
+        labels = ~`Vital Status`,
+        values = ~Count,
+        type = "pie",
+        textinfo = "label+percent",  # Display labels and percentages
+        hoverinfo = "label+percent+value",  # Show additional info on hover
+        marker = list(colors = primary_diagnosis_colors)  # Customize colors
+      ) %>%
+        layout(
+          title = "Vital Status Distribution",
           showlegend = TRUE
         )
     }
@@ -1117,7 +1157,7 @@ res_reactive <- reactive({
     return(NULL)
   }
   
-  res <- results(dds, name = "vital_status_Dead_vs_Alive")
+  res <- results(dds, name = "tissue_type_Tumor_vs_Normal")
   return(res)
 })
 ```
@@ -1131,7 +1171,7 @@ resLFC_reactive <- reactive({
   }
   
   # or to shrink log fold changes association with condition
-  resLFC <- lfcShrink(dds, coef="vital_status_Dead_vs_Alive", type="apeglm")
+  resLFC <- lfcShrink(dds, coef="tissue_type_Tumor_vs_Normal", type="apeglm")
   return(resLFC)
 })
 ```
@@ -1220,6 +1260,18 @@ res_LFC_volcano_data_reactive <- reactive({
 })
 ```
 
+```{r define sig colors, include=FALSE}
+# Define consistent color mapping
+  significance_colors <- c(
+    "Both Significant (Downregulated)" = "blue",
+    "Both Significant (Upregulated)" = "red",
+    "Not Significant" = "gray",
+    "Significant Log2FC" = "lightgreen",
+    "Significant p-value" = "lightblue"
+  )
+```
+
+
 ## Row
 
 ### Number of Downregualted Genes {data-height="200"}
@@ -1227,25 +1279,19 @@ res_LFC_volcano_data_reactive <- reactive({
 ```{r value bar- downregulated}
 # Reactive expression to calculate the number of downregulated genes
 downregulated_count <- reactive({
-  check <- sample_count_check()
-  if (!check$valid) {
-    return(0)
-  }
-  
   res_volcano_data <- res_volcano_data_reactive()
   if (is.null(res_volcano_data)) {
-    return(0)
+    return(NA)
   }
   
   # Filter the data for downregulated genes based on LFC and p-value thresholds
   downregulated_genes <- res_volcano_data %>%
-    filter(log2FC < -input$lfc_threshold & pvalue < input$pval_threshold)
+    filter(log2FC < -deg_lfc_threshold() & pvalue < deg_pval_threshold())
   nrow(downregulated_genes)  # Return the count of downregulated genes
 })
 
 renderValueBox({
-  check <- sample_count_check()
-  if (!check$valid) {
+  if (is.na(downregulated_count())) {
     valueBox(
       value = "N/A", 
       caption = "Insufficient Data",
@@ -1268,25 +1314,19 @@ renderValueBox({
 ```{r value bar- upregulated}
 # Reactive expression to calculate the number of upregulated genes
 upregulated_count <- reactive({
-  check <- sample_count_check()
-  if (!check$valid) {
-    return(0)
-  }
-  
   res_volcano_data <- res_volcano_data_reactive()
   if (is.null(res_volcano_data)) {
-    return(0)
+    return(NA)
   }
   
   # Filter the data for upregulated genes based on LFC and p-value thresholds
   upregulated_genes <- res_volcano_data %>%
-    filter(log2FC > input$lfc_threshold & pvalue < input$pval_threshold)
+    filter(log2FC > deg_lfc_threshold() & pvalue < deg_pval_threshold())
   nrow(upregulated_genes)  # Return the count of upregulated genes
 })
 
 renderValueBox({
-  check <- sample_count_check()
-  if (!check$valid) {
+  if (is.na(upregulated_count())) {
     valueBox(
       value = "N/A", 
       caption = "Insufficient Data",
@@ -1311,36 +1351,25 @@ renderValueBox({
 ```{r interactive deseq volcano plot- res}
 # Reactive volcano plot with dynamic thresholds
 renderPlotly({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    plot_ly() %>% 
-      add_text(x = 0.5, y = 0.5, text = check$message, 
-               textfont = list(size = 16, color = "red"),
-               showlegend = FALSE) %>%
-      layout(xaxis = list(visible = FALSE), 
-             yaxis = list(visible = FALSE),
-             title = "Volcano Plot - Insufficient Data")
-  } else {
-    res_volcano_data <- res_volcano_data_reactive()
+  res_volcano_data <- res_volcano_data_reactive()
     
     if (is.null(res_volcano_data)) {
-      plot_ly() %>% 
-        add_text(x = 0.5, y = 0.5, text = "Error generating DEG analysis", 
-                 textfont = list(size = 16, color = "red"),
-                 showlegend = FALSE) %>%
-        layout(xaxis = list(visible = FALSE), 
-               yaxis = list(visible = FALSE),
-               title = "Volcano Plot - Analysis Error")
+      plotly::plotly_empty() %>%
+        layout(
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 patients,\nthen click 'Run Analysis' to view the Volcano plot.</sub>", 
+          font = list(size = 16)),
+          xaxis = list(visible = FALSE),
+          yaxis = list(visible = FALSE)
+        )
     } else {
       # Filter data based on slider inputs
       filtered_data <- res_volcano_data %>%
         mutate(
           Significance = case_when(
-            log2FC > input$lfc_threshold & pvalue < input$pval_threshold ~ "Both Significant (Upregulated)",
-            log2FC < -input$lfc_threshold & pvalue < input$pval_threshold ~ "Both Significant (Downregulated)",
-            pvalue < input$pval_threshold ~ "Significant p-value",
-            abs(log2FC) > input$lfc_threshold ~ "Significant Log2FC",
+            log2FC > deg_lfc_threshold() & pvalue < deg_pval_threshold() ~ "Both Significant (Upregulated)",
+            log2FC < -deg_lfc_threshold() & pvalue < deg_pval_threshold() ~ "Both Significant (Downregulated)",
+            pvalue < deg_pval_threshold() ~ "Significant p-value",
+            abs(log2FC) > deg_lfc_threshold() ~ "Significant Log2FC",
             TRUE ~ "Not Significant"
           )
         )
@@ -1351,7 +1380,7 @@ renderPlotly({
         y = ~-log10(pvalue),
         text = ~Gene,
         color = ~Significance,
-        colors = c("blue", "red", "gray", "lightgreen","lightblue"),
+        colors = significance_colors,
         type = "scatter",
         mode = "markers"
       ) %>%
@@ -1361,27 +1390,26 @@ renderPlotly({
           yaxis = list(title = "-Log10 (P-value)"),
           shapes = list(
             list(type = "line", 
-                 x0 = input$lfc_threshold, 
-                 x1 = input$lfc_threshold, 
+                 x0 = deg_lfc_threshold(), 
+                 x1 = deg_lfc_threshold(), 
                  y0 = 0, 
                  y1 = max(-log10(res_volcano_data$pvalue)), 
                  line = list(dash = "dash", color = "black")),
             list(type = "line", 
-                 x0 = -input$lfc_threshold, 
-                 x1 = -input$lfc_threshold, 
+                 x0 = -deg_lfc_threshold(), 
+                 x1 = -deg_lfc_threshold(), 
                  y0 = 0, 
                  y1 = max(-log10(res_volcano_data$pvalue)), 
                  line = list(dash = "dash", color = "black")),
             list(type = "line", 
                  x0 = min(res_volcano_data$log2FC), 
                  x1 = max(res_volcano_data$log2FC), 
-                 y0 = -log10(input$pval_threshold), 
-                 y1 = -log10(input$pval_threshold), 
+                 y0 = -log10(deg_pval_threshold()), 
+                 y1 = -log10(deg_pval_threshold()), 
                  line = list(dash = "dash", color = "black"))
           )
         )
     }
-  }
 })
 ```
 
@@ -1414,20 +1442,6 @@ resOrdered_rounded_reactive <- reactive({
 ```{r res table}
 # Create a searchable and interactive table
 renderDT({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    # Return empty datatable with message
-    datatable(
-      data.frame(Message = check$message),
-      options = list(
-        pageLength = 1,
-        dom = 't',
-        ordering = FALSE
-      ),
-      rownames = FALSE
-    )
-  } else {
     resOrdered_rounded <- resOrdered_rounded_reactive()
     
     if (is.null(resOrdered_rounded)) {
@@ -1451,7 +1465,6 @@ renderDT({
         rownames = TRUE
       )
     }
-  }
 })
 ```
 
@@ -1712,25 +1725,19 @@ renderDT({
 ```{r value bar- LFC downregulated}
 # Reactive expression to calculate the number of downregulated genes
 downregulated_LFC_count <- reactive({
-  check <- sample_count_check()
-  if (!check$valid) {
-    return(0)
-  }
-  
   res_LFC_volcano_data <- res_LFC_volcano_data_reactive()
   if (is.null(res_LFC_volcano_data)) {
-    return(0)
+    return(NA)
   }
   
   # Filter the data for downregulated genes based on LFC and p-value thresholds
   downregulated_LFC_genes <- res_LFC_volcano_data %>%
-    filter(log2FC < -input$lfc_threshold & pvalue < input$pval_threshold)
+    filter(log2FC < -deg_lfc_threshold() & pvalue < deg_pval_threshold())
   nrow(downregulated_LFC_genes)  # Return the count of downregulated genes
 })
 
 renderValueBox({
-  check <- sample_count_check()
-  if (!check$valid) {
+  if (is.na(downregulated_LFC_count())) {
     valueBox(
       value = "N/A",
       caption = "Insufficient Data",
@@ -1753,25 +1760,19 @@ renderValueBox({
 ```{r value bar- LFC upregulated}
 # Reactive expression to calculate the number of upregulated genes
 upregulated_LFC_count <- reactive({
-  check <- sample_count_check()
-  if (!check$valid) {
-    return(0)
-  }
-  
   res_LFC_volcano_data <- res_LFC_volcano_data_reactive()
   if (is.null(res_LFC_volcano_data)) {
-    return(0)
+    return(NA)
   }
   
   # Filter the data for upregulated genes based on LFC and p-value thresholds
   upregulated_LFC_genes <- res_LFC_volcano_data %>%
-    filter(log2FC > input$lfc_threshold & pvalue < input$pval_threshold)
+    filter(log2FC > deg_lfc_threshold() & pvalue < deg_pval_threshold())
   nrow(upregulated_LFC_genes)  # Return the count of upregulated genes
 })
 
 renderValueBox({
-  check <- sample_count_check()
-  if (!check$valid) {
+  if (is.na(upregulated_LFC_count())) {
     valueBox(
       value = "N/A", 
       caption = "Insufficient Data",
@@ -1797,36 +1798,24 @@ renderValueBox({
 ```{r interactive deseq volcano plot- res LFC shrink}
 # Reactive volcano plot with dynamic thresholds
 renderPlotly({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    plot_ly() %>% 
-      add_text(x = 0.5, y = 0.5, text = check$message, 
-               textfont = list(size = 16, color = "red"),
-               showlegend = FALSE) %>%
-      layout(xaxis = list(visible = FALSE), 
-             yaxis = list(visible = FALSE),
-             title = "LFC Shrinkage Volcano Plot - Insufficient Data")
-  } else {
-    res_LFC_volcano_data <- res_LFC_volcano_data_reactive()
-    
+  res_LFC_volcano_data <- res_LFC_volcano_data_reactive()
     if (is.null(res_LFC_volcano_data)) {
-      plot_ly() %>% 
-        add_text(x = 0.5, y = 0.5, text = "Error generating LFC shrinkage analysis", 
-                 textfont = list(size = 16, color = "red"),
-                 showlegend = FALSE) %>%
-        layout(xaxis = list(visible = FALSE), 
-               yaxis = list(visible = FALSE),
-               title = "LFC Shrinkage Volcano Plot - Analysis Error")
+      plotly::plotly_empty() %>%
+        layout(
+          title = list(text = "📊 Not Enough Samples Selected<br><sub>Please select at least 3 patients,\nthen click 'Run Analysis' to view the Volcano plot.</sub>", 
+          font = list(size = 16)),
+          xaxis = list(visible = FALSE),
+          yaxis = list(visible = FALSE)
+        )
     } else {
       # Filter data based on slider inputs
       filtered_data_LFC <- res_LFC_volcano_data %>%
         mutate(
           Significance = case_when(
-            log2FC > input$lfc_threshold & pvalue < input$pval_threshold ~ "Both Significant (Upregulated)",
-            log2FC < -input$lfc_threshold & pvalue < input$pval_threshold ~ "Both Significant (Downregulated)",
-            pvalue < input$pval_threshold ~ "Significant p-value",
-            abs(log2FC) > input$lfc_threshold ~ "Significant Log2FC",
+            log2FC > deg_lfc_threshold() & pvalue < deg_pval_threshold() ~ "Both Significant (Upregulated)",
+            log2FC < -deg_lfc_threshold() & pvalue < deg_pval_threshold() ~ "Both Significant (Downregulated)",
+            pvalue < deg_pval_threshold() ~ "Significant p-value",
+            abs(log2FC) > deg_lfc_threshold() ~ "Significant Log2FC",
             TRUE ~ "Not Significant"
           )
         )
@@ -1837,7 +1826,7 @@ renderPlotly({
         y = ~-log10(pvalue),
         text = ~Gene,
         color = ~Significance,
-        colors = c("blue", "red", "gray", "lightgreen","lightblue"),
+        colors = significance_colors,
         type = "scatter",
         mode = "markers"
       ) %>%
@@ -1847,27 +1836,26 @@ renderPlotly({
           yaxis = list(title = "-Log10 (P-value)"),
           shapes = list(
             list(type = "line", 
-                 x0 = input$lfc_threshold, 
-                 x1 = input$lfc_threshold, 
+                 x0 = deg_lfc_threshold(), 
+                 x1 = deg_lfc_threshold(), 
                  y0 = 0, 
                  y1 = max(-log10(res_LFC_volcano_data$pvalue)), 
                  line = list(dash = "dash", color = "black")),
             list(type = "line", 
-                 x0 = -input$lfc_threshold, 
-                 x1 = -input$lfc_threshold, 
+                 x0 = -deg_lfc_threshold(), 
+                 x1 = -deg_lfc_threshold(), 
                  y0 = 0, 
                  y1 = max(-log10(res_LFC_volcano_data$pvalue)), 
                  line = list(dash = "dash", color = "black")),
             list(type = "line", 
                  x0 = min(res_LFC_volcano_data$log2FC), 
                  x1 = max(res_LFC_volcano_data$log2FC), 
-                 y0 = -log10(input$pval_threshold), 
-                 y1 = -log10(input$pval_threshold), 
+                 y0 = -log10(deg_pval_threshold()), 
+                 y1 = -log10(deg_pval_threshold()), 
                  line = list(dash = "dash", color = "black"))
           )
         )
     }
-  }
 })
 ```
 
@@ -1900,21 +1888,7 @@ resOrdered_LFC_rounded_reactive <- reactive({
 ```{r resLFC table}
 # Create a searchable and interactive table
 renderDT({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    # Return empty datatable with message
-    datatable(
-      data.frame(Message = check$message),
-      options = list(
-        pageLength = 1,
-        dom = 't',
-        ordering = FALSE
-      ),
-      rownames = FALSE
-    )
-  } else {
-    resOrdered_LFC_rounded <- resOrdered_LFC_rounded_reactive()
+  resOrdered_LFC_rounded <- resOrdered_LFC_rounded_reactive()
     
     if (is.null(resOrdered_LFC_rounded)) {
       datatable(
@@ -1937,7 +1911,6 @@ renderDT({
         rownames = TRUE
       )
     }
-  }
 })
 ```
 
@@ -1970,11 +1943,6 @@ pvalrankData_reactive <- reactive({
 ```{r hallmark gmt reactive}
 # Reactive expression for hallmark pathway analysis
 hall_gsea_results_reactive <- reactive({
-  check <- sample_count_check()
-  if (!check$valid) {
-    return(NULL)
-  }
-  
   pvalrankData <- pvalrankData_reactive()
   if (is.null(pvalrankData)) {
     return(NULL)
@@ -2043,26 +2011,15 @@ renderUI({
 
 ## Row {data-height="800"}
 
-### Hallmark Pathways by NES (Dead vs. Alive)
+### Hallmark Pathways by NES (Tumor vs. Normal)
 
 ```{r hallmark pathways}
 renderPlotly({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    plot_ly() %>% 
-      add_text(x = 0.5, y = 0.5, text = check$message, 
-               textfont = list(size = 16, color = "red"),
-               showlegend = FALSE) %>%
-      layout(xaxis = list(visible = FALSE), 
-             yaxis = list(visible = FALSE),
-             title = "Hallmark Pathways - Insufficient Data")
-  } else {
-    hall_data <- hall_gsea_results_reactive()
+  hall_data <- hall_gsea_results_reactive()
     
     if (is.null(hall_data)) {
       plot_ly() %>% 
-        add_text(x = 0.5, y = 0.5, text = "Error generating pathway analysis", 
+        add_text(x = 0.5, y = 0.5, text = "Error generating pathway analysis\nAdd at least 3 samples for bar chart", 
                  textfont = list(size = 16, color = "red"),
                  showlegend = FALSE) %>%
         layout(xaxis = list(visible = FALSE), 
@@ -2090,7 +2047,7 @@ renderPlotly({
           orientation = "h"
         ) %>%
           layout(
-            title = "Hallmark Pathways by NES (Dead vs. Alive)",
+            title = "Hallmark Pathways by NES (Tumor vs. Normal)",
             xaxis = list(title = "Normalized Enrichment Score (NES)"),
             yaxis = list(title = ""),
             barmode = "stack",
@@ -2098,7 +2055,6 @@ renderPlotly({
           )
       }
     }
-  }
 })
 ```
 
@@ -2108,27 +2064,16 @@ renderPlotly({
 
 ```{r hallmark enrich plot}
 renderPlotly({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    plot_ly() %>% 
-      add_text(x = 0.5, y = 0.5, text = check$message, 
-               textfont = list(size = 16, color = "red"),
-               showlegend = FALSE) %>%
-      layout(xaxis = list(visible = FALSE), 
-             yaxis = list(visible = FALSE),
-             title = "Enrichment Plot - Insufficient Data")
-  } else {
     hall_data <- hall_gsea_results_reactive()
     
     if (is.null(hall_data) || is.null(input$hall_pathway)) {
       plot_ly() %>% 
-        add_text(x = 0.5, y = 0.5, text = "Error generating enrichment plot", 
+        add_text(x = 0.5, y = 0.5, text = "Error generating enrichment plot\nAdd at least 3 samples for enrichment plot", 
                  textfont = list(size = 16, color = "red"),
                  showlegend = FALSE) %>%
         layout(xaxis = list(visible = FALSE), 
                yaxis = list(visible = FALSE),
-               title = "Enrichment Plot - Analysis Error")
+               title = "Enrichment Plot")
     } else {
       hallpathways <- hall_data$hallpathways
       pvalrankData <- hall_data$pvalrankData
@@ -2153,7 +2098,6 @@ renderPlotly({
           margin = list(t = 50)        # Increase top margin
         )
     }
-  }
 })
 ```
 
@@ -2194,21 +2138,7 @@ hallmark_rounded_reactive <- reactive({
 
 ```{r hallmark GSEA table}
 renderDT({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    # Return empty datatable with message
-    datatable(
-      data.frame(Message = check$message),
-      options = list(
-        pageLength = 1,
-        dom = 't',
-        ordering = FALSE
-      ),
-      rownames = FALSE
-    )
-  } else {
-    hallmark_rounded <- hallmark_rounded_reactive()
+  hallmark_rounded <- hallmark_rounded_reactive()
     
     if (is.null(hallmark_rounded)) {
       datatable(
@@ -2231,423 +2161,5 @@ renderDT({
         rownames = FALSE
       )
     }
-  }
-})
-```
-
-<!-- # Reactome Pathways {data-navmenu="Menu" data-orientation="rows"} -->
-
-<!-- ```{r reactome gmt,include=FALSE} -->
-<!-- reacpathways <- gmtPathways(gmt.file = "data/c2.cp.reactome.v2023.2.Hs.symbols.gmt") -->
-<!-- reacfgseaResults <- fgsea(pathways = reacpathways,stats = pvalrankData) -->
-<!-- reacfgseaResults$gene_rank_positions <- sapply(reacfgseaResults$leadingEdge, function(genes) { -->
-<!--   which(names(pvalrankData) %in% genes) # Get ranks for all leading-edge genes -->
-<!-- }) -->
-<!-- reactomefgseares<- reacfgseaResults[order(pval),] %>%  -->
-<!--   select(pathway, pval, padj, ES, NES, size, gene_rank_positions) %>%  -->
-<!--   arrange(desc(NES))  -->
-<!-- reac_gsea_results <- reactomefgseares %>% mutate(shortpathway=gsub("REACTOME_","",reactomefgseares$pathway)) %>%  -->
-<!--   na.omit() %>% -->
-<!--   mutate( -->
-<!--     GeneSet = reorder(shortpathway, NES), -->
-<!--     Group = case_when( -->
-<!--       NES > 0 & padj < 0.10 ~ "Upregulated",  -->
-<!--       NES < 0 & padj < 0.10 ~ "Downregulated", -->
-<!--       TRUE ~ NA) -->
-<!--   ) %>% -->
-<!--   filter(!is.na(Group)) %>%  -->
-<!--   mutate( -->
-<!--     GeneSet = droplevels(GeneSet), # Drop unused levels from GeneSet -->
-<!--   ) %>%  -->
-<!--   as.data.frame() -->
-<!-- ``` -->
-
-<!-- ## Explanation of Process {.sidebar} -->
-
-<!-- blurb about: pathways from msig database and use of fgsea package. Threshold of adjusted p-value of \< 0.10 and absolute value of NES \> 0 -->
-
-<!-- Here you can choose a **pathway** to see the enrichment plot and gene ranking. -->
-
-<!-- ```{r select reactome pathway} -->
-<!-- # Dropdown for selecting pathway -->
-<!-- # Define a lookup for display names -->
-<!-- display_names <- gsub("REACTOME_","",reac_gsea_results$pathway)  -->
-
-<!-- # Create choices using the lookup -->
-<!-- selectInput( -->
-<!--   inputId = "reac_pathway", -->
-<!--   label = "Select a Pathway:", -->
-<!--   choices = setNames(reac_gsea_results$pathway, display_names), -->
-<!--   selected = reac_gsea_results$pathway[1] -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- ## Row {data-height="800"} -->
-
-<!-- ### Reactome Pathways by NES (Organoid vs. Tumor) -->
-
-<!-- ```{r reactome pathways} -->
-<!-- plot_ly( -->
-<!--   reac_gsea_results, -->
-<!--   x = ~NES, -->
-<!--   y = ~GeneSet, -->
-<!--   color = ~Group, -->
-<!--   colors = c("Downregulated" = "blue", "Upregulated" = "red"), -->
-<!--   type = "bar", -->
-<!--   orientation = "h" -->
-<!-- ) %>% -->
-<!--   layout( -->
-<!--     title = "Reactome Pathways by NES", -->
-<!--     xaxis = list(title = "Normalized Enrichment Score (NES)"), -->
-<!--     yaxis = list(title = ""), -->
-<!--     barmode = "stack", -->
-<!--     legend = list(title = list(text = "Group")) -->
-<!--   ) -->
-<!-- ``` -->
-
-<!-- ## Row {data-height="800"} -->
-
-<!-- ### Reactome Enrichment Plots -->
-
-<!-- ```{r reactome enrich plot} -->
-<!-- renderPlotly({ -->
-<!--     req(input$reac_pathway)  # Ensure input$pathway is not NULL or empty -->
-
-<!--     # Extract the selected pathway -->
-<!--     pathwayofinterest <- reacpathways[[input$reac_pathway]] -->
-
-<!--     # Generate the enrichment plot -->
-<!--     ggplotly( -->
-<!--       plotEnrichment( -->
-<!--         pathway = pathwayofinterest, -->
-<!--         stats = pvalrankData -->
-<!--       ) -->
-<!--     ) %>%  -->
-<!--       layout( -->
-<!--         title = paste("Enrichment Plot:",input$reac_pathway), -->
-<!--         xaxis = list(title = "Rank"), -->
-<!--         yaxis = list(title = "Enrichment Score"), -->
-<!--         autosize = TRUE,  # Enable responsive resizing -->
-<!--         width = NULL, -->
-<!--         titlefont = list(size = 16),  # Adjust font size -->
-<!--         margin = list(t = 50)        # Increase top margin -->
-<!--       ) -->
-<!--   }) -->
-<!-- ``` -->
-
-<!-- ## Row -->
-
-<!-- ### GSEA Table (Reactome) -->
-
-<!-- ```{r round reactome, include=FALSE} -->
-<!-- reactome_rounded <- reactomefgseares %>%  -->
-<!--   select(-gene_rank_positions,-size) %>% -->
-<!--   as.data.frame() %>%  -->
-<!--   mutate( -->
-<!--   pathway = gsub("REACTOME_","",reactomefgseares$pathway) -->
-<!--   ) -->
-
-<!-- # Round all numeric columns to 2 decimal places -->
-<!-- reactome_rounded[sapply(reactome_rounded, is.numeric)] <- lapply( -->
-<!--   reactome_rounded[sapply(reactome_rounded, is.numeric)], -->
-<!--   function(x) round(x, 2) -->
-<!-- ) -->
-
-<!-- # Keep pvalue and padj columns in scientific notation -->
-<!-- reactome_rounded$pval <- formatC(reactomefgseares$pval, format = "e", digits = 2) -->
-<!-- reactome_rounded$padj <- formatC(reactomefgseares$padj, format = "e", digits = 2) -->
-<!-- ``` -->
-
-<!-- ```{r reactome GSEA table} -->
-<!-- datatable( -->
-<!--   reactome_rounded, -->
-<!--   options = list( -->
-<!--     pageLength = 10,    # Number of rows per page -->
-<!--     searchHighlight = TRUE, # Highlight search matches -->
-<!--     dom = 'Blfrtip'     # Layout options for table (search box, pagination, etc.) -->
-<!--   ), -->
-<!--   rownames = FALSE -->
-<!-- ) -->
-<!-- ``` -->
-
-# KEGG Pathways {data-navmenu="Menu" data-orientation="rows"}
-
-```{r kegg gmt reactive}
-# Reactive expression for KEGG pathway analysis
-kegg_gsea_results_reactive <- reactive({
-  check <- sample_count_check()
-  if (!check$valid) {
-    return(NULL)
-  }
-  
-  pval_data <- pvalrankData_reactive()
-  if (is.null(pval_data)) {
-    return(NULL)
-  }
-  
-  tryCatch({
-    keggpathways <- gmtPathways(gmt.file = "data/c2.cp.kegg_legacy.v2023.2.Hs.symbols.gmt")
-    keggfgseaResults <- fgsea(pathways = keggpathways,stats = pval_data)
-    keggfgseaResults$gene_rank_positions <- sapply(keggfgseaResults$leadingEdge, function(genes) {
-      which(names(pval_data) %in% genes) # Get ranks for all leading-edge genes
-    })
-    
-    keggfgseares<- keggfgseaResults[order(pval),] %>% 
-      select(pathway, pval, padj, ES, NES, size, gene_rank_positions) %>% 
-      arrange(desc(NES))
-    
-    kegg_gsea_results <- keggfgseares %>% mutate(shortpathway=gsub("KEGG_","",keggfgseares$pathway)) %>% 
-      na.omit() %>%
-      mutate(
-        GeneSet = reorder(shortpathway, NES),
-        Group = case_when(
-          NES > 0 & padj < 0.10 ~ "Upregulated", 
-          NES < 0 & padj < 0.10 ~ "Downregulated",
-          TRUE ~ NA)
-      ) %>%
-      filter(!is.na(Group)) %>% 
-      mutate(
-        GeneSet = droplevels(GeneSet), # Drop unused levels from GeneSet
-      ) %>% 
-      as.data.frame()
-    
-    return(list(
-      keggpathways = keggpathways,
-      keggfgseares = keggfgseares,
-      kegg_gsea_results = kegg_gsea_results,
-      pvalrankData = pval_data
-    ))
-  }, error = function(e) {
-    warning(paste("Error in KEGG pathway analysis:", e$message))
-    return(NULL)
-  })
-})
-```
-
-## Explanation of Process {.sidebar}
-
-blurb about: pathways from msig database and use of fgsea package.Threshold of adjusted p-value of \< 0.10 and absolute value of NES \> 0
-
-Here you can choose a **pathway** to see the enrichment plot and gene ranking.
-
-```{r select kegg pathway}
-# Dropdown for selecting pathway
-renderUI({
-  kegg_data <- kegg_gsea_results_reactive()
-  
-  if (is.null(kegg_data)) {
-    p("Please select at least 3 samples for pathway analysis", style = "color: red;")
-  } else {
-    kegg_gsea_results <- kegg_data$kegg_gsea_results
-    
-    if (nrow(kegg_gsea_results) == 0) {
-      p("No significant pathways found", style = "color: orange;")
-    } else {
-      # Define a lookup for display names
-      display_names <- gsub("KEGG_","",kegg_gsea_results$pathway) 
-      
-      # Create choices using the lookup
-      selectInput(
-        inputId = "kegg_pathway",
-        label = "Select a Pathway:",
-        choices = setNames(kegg_gsea_results$pathway, display_names),
-        selected = kegg_gsea_results$pathway[1]
-      )
-    }
-  }
-})
-```
-
-## Row {data-height="800"}
-
-### KEGG Pathways by NES (Dead vs. Alive)
-
-```{r kegg pathways}
-renderPlotly({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    plot_ly() %>% 
-      add_text(x = 0.5, y = 0.5, text = check$message, 
-               textfont = list(size = 16, color = "red"),
-               showlegend = FALSE) %>%
-      layout(xaxis = list(visible = FALSE), 
-             yaxis = list(visible = FALSE),
-             title = "KEGG Pathways - Insufficient Data")
-  } else {
-    kegg_data <- kegg_gsea_results_reactive()
-    
-    if (is.null(kegg_data)) {
-      plot_ly() %>% 
-        add_text(x = 0.5, y = 0.5, text = "Error generating pathway analysis", 
-                 textfont = list(size = 16, color = "red"),
-                 showlegend = FALSE) %>%
-        layout(xaxis = list(visible = FALSE), 
-             yaxis = list(visible = FALSE),
-             title = "KEGG Pathways - Analysis Error")
-    } else {
-      kegg_gsea_results <- kegg_data$kegg_gsea_results
-      
-      if (nrow(kegg_gsea_results) == 0) {
-        plot_ly() %>% 
-          add_text(x = 0.5, y = 0.5, text = "No significant pathways found", 
-                   textfont = list(size = 16, color = "orange"),
-                   showlegend = FALSE) %>%
-          layout(xaxis = list(visible = FALSE), 
-                 yaxis = list(visible = FALSE),
-                 title = "KEGG Pathways - No Significant Results")
-      } else {
-        plot_ly(
-          kegg_gsea_results,
-          x = ~NES,
-          y = ~GeneSet,
-          color = ~Group,
-          colors = c("Downregulated" = "blue", "Upregulated" = "red"),
-          type = "bar",
-          orientation = "h"
-        ) %>%
-          layout(
-            title = "KEGG Pathways by NES",
-            xaxis = list(title = "Normalized Enrichment Score (NES)"),
-            yaxis = list(title = ""),
-            barmode = "stack",
-            legend = list(title = list(text = "Group"))
-          )
-      }
-    }
-  }
-})
-```
-
-## Row {data-height="800"}
-
-### KEGG Enrichment Plots
-
-```{r kegg enrich plot}
-renderPlotly({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    plot_ly() %>% 
-      add_text(x = 0.5, y = 0.5, text = check$message, 
-               textfont = list(size = 16, color = "red"),
-               showlegend = FALSE) %>%
-      layout(xaxis = list(visible = FALSE), 
-             yaxis = list(visible = FALSE),
-             title = "Enrichment Plot - Insufficient Data")
-  } else {
-    kegg_data <- kegg_gsea_results_reactive()
-    
-    if (is.null(kegg_data) || is.null(input$kegg_pathway)) {
-      plot_ly() %>% 
-        add_text(x = 0.5, y = 0.5, text = "Error generating enrichment plot", 
-                 textfont = list(size = 16, color = "red"),
-                 showlegend = FALSE) %>%
-        layout(xaxis = list(visible = FALSE), 
-               yaxis = list(visible = FALSE),
-               title = "Enrichment Plot - Analysis Error")
-    } else {
-      keggpathways <- kegg_data$keggpathways
-      pvalrankData <- kegg_data$pvalrankData
-      
-      # Extract the selected pathway
-      pathwayofinterest <- keggpathways[[input$kegg_pathway]]
-      
-      # Generate the enrichment plot
-      ggplotly(
-        plotEnrichment(
-          pathway = pathwayofinterest,
-          stats = pvalrankData
-        )
-      ) %>% 
-        layout(
-          title = paste("Enrichment Plot:",input$kegg_pathway),
-          xaxis = list(title = "Rank"),
-          yaxis = list(title = "Enrichment Score"),
-          autosize = TRUE,  # Enable responsive resizing
-          width = NULL,
-          titlefont = list(size = 16),  # Adjust font size
-          margin = list(t = 50)        # Increase top margin
-        )
-    }
-  }
-})
-```
-
-## Row
-
-### GSEA Table (KEGG)
-
-```{r round kegg reactive}
-# Reactive expression for rounded KEGG results
-kegg_rounded_reactive <- reactive({
-  kegg_data <- kegg_gsea_results_reactive()
-  if (is.null(kegg_data)) {
-    return(NULL)
-  }
-  
-  keggfgseares <- kegg_data$keggfgseares
-  
-  kegg_rounded <- keggfgseares %>% 
-    select(-gene_rank_positions,-size) %>%
-    as.data.frame() %>% 
-    mutate(
-    pathway = gsub("KEGG_","",keggfgseares$pathway)
-    )
-  
-  # Round all numeric columns to 2 decimal places
-  kegg_rounded[sapply(kegg_rounded, is.numeric)] <- lapply(
-    kegg_rounded[sapply(kegg_rounded, is.numeric)],
-    function(x) round(x, 2)
-  )
-  
-  # Keep pvalue and padj columns in scientific notation
-  kegg_rounded$pval <- formatC(keggfgseares$pval, format = "e", digits = 2)
-  kegg_rounded$padj <- formatC(keggfgseares$padj, format = "e", digits = 2)
-  
-  return(kegg_rounded)
-})
-```
-
-```{r kegg GSEA table}
-renderDT({
-  check <- sample_count_check()
-  
-  if (!check$valid) {
-    # Return empty datatable with message
-    datatable(
-      data.frame(Message = check$message),
-      options = list(
-        pageLength = 1,
-        dom = 't',
-        ordering = FALSE
-      ),
-      rownames = FALSE
-    )
-  } else {
-    kegg_rounded <- kegg_rounded_reactive()
-    
-    if (is.null(kegg_rounded)) {
-      datatable(
-        data.frame(Message = "Error generating KEGG pathway analysis"),
-        options = list(
-          pageLength = 1,
-          dom = 't',
-          ordering = FALSE
-        ),
-        rownames = FALSE
-      )
-    } else {
-      datatable(
-        kegg_rounded,
-        options = list(
-          pageLength = 10,    # Number of rows per page
-          searchHighlight = TRUE, # Highlight search matches
-          dom = 'Blfrtip'     # Layout options for table (search box, pagination, etc.)
-        ),
-        rownames = FALSE
-      )
-    }
-  }
 })
 ```
