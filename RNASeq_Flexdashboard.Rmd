@@ -20,6 +20,54 @@ editor_options:
   chunk_output_type: inline
 ---
 
+```{r}
+# # Install CRAN packages
+# install.packages(c(
+#   "shiny",
+#   "shinyWidgets",
+#   "dplyr",
+#   "ggplot2",
+#   "tidyverse",
+#   "janitor",
+#   "flexdashboard",
+#   "readxl",
+#   "utils",
+#   "RColorBrewer",
+#   "cluster",
+#   "factoextra",
+#   "plotly",
+#   "highcharter",
+#   "DT",
+#   "bslib",
+#   "sass",
+#   "ggpubr",
+#   "reshape2",
+#   "enrichR",
+#   "rsconnect"
+# ))
+# 
+# # Install Bioconductor packages
+# if (!requireNamespace("BiocManager", quietly = TRUE)) {
+#   install.packages("BiocManager")
+# }
+# 
+# BiocManager::install(c(
+#   "ComplexHeatmap",
+#   "DESeq2",
+#   "EnhancedVolcano",
+#   "fgsea",
+#   "circlize",
+#   "apeglm",
+#   "biomaRt",
+#   "TCGAbiolinks"
+# ))
+# 
+# library(utils)
+# rforge <- "http://r-forge.r-project.org"
+# install.packages("estimate", repos=rforge, dependencies=TRUE)
+```
+
+
 ```{r libraries, message=FALSE, include=FALSE}
 library(shiny)
 library(shinyWidgets)
