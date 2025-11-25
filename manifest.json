@@ -489,7 +489,7 @@
     },
     "EnhancedVolcano": {
       "Source": "Bioconductor",
-      "Repository": null,
+      "Repository": "https://bioconductor.org/packages/3.22/bioc",
       "description": {
         "Package": "EnhancedVolcano",
         "Type": "Package",
@@ -7701,7 +7701,7 @@
       "checksum": "d3cc2501f403d9cf0dffbe40feb6bffe"
     },
     "RNASeq_Flexdashboard.Rmd": {
-      "checksum": "f5e9718173a215a14de833323f1242cb"
+      "checksum": "c81120e84d25be42b65970ace76d81c9"
     }
   },
   "users": null
