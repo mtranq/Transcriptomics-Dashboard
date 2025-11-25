@@ -489,7 +489,7 @@
     },
     "EnhancedVolcano": {
       "Source": "Bioconductor",
-      "Repository": "https://bioconductor.org/packages/release/bioc",
+      "Repository": "https://bioconductor.org/packages/3.22/bioc",
       "description": {
         "Package": "EnhancedVolcano",
         "Type": "Package",
