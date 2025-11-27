@@ -174,7 +174,7 @@ choices<-coldata%>%group_by(race)%>%summarise(Patient=list(unique(patient)))%>%d
 This dashboard provides a comprehensive view of **RNA sequencing (RNASeq)** data. Correlation matrix and PCA plots built on the variance stabilizing transformation of the [DESEQ2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
  package.
  
- Use the input field to select the ID(s) of interest, and the dashboard will retrieve the relevant organoid, case, or both associated with the selected study ID.
+ Use the input field to select the ID(s) of interest, and the dashboard will retrieve the relevant normal and tumor samples associated with the selected Patient ID.
 
 ```{r pmid input}
 pickerInput(
