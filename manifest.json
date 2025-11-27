@@ -487,37 +487,6 @@
         "RemoteSha": "4.2.0"
       }
     },
-    "EnhancedVolcano": {
-      "Source": "Bioconductor",
-      "Repository": "https://bioconductor.org/packages/3.22/bioc",
-      "description": {
-        "Package": "EnhancedVolcano",
-        "Type": "Package",
-        "Title": "Publication-ready volcano plots with enhanced colouring and\nlabeling",
-        "Version": null,
-        "Authors@R": "c(\n    person(\"Kevin\", \"Blighe\", role = c(\"aut\", \"cre\"), email = \"kevin@clinicalbioinformatics.co.uk\"),\n    person(\"Sharmila\", \"Rana\", role = c(\"aut\")),\n    person(\"Emir\", \"Turkes\", role = c(\"ctb\")),\n    person(\"Benjamin\", \"Ostendorf\", role = c(\"ctb\")),\n    person(\"Andrea\", \"Grioni\", role = c(\"ctb\")),\n    person(\"Myles\", \"Lewis\", role = c(\"aut\")))",
-        "Maintainer": "Kevin Blighe <kevin@clinicalbioinformatics.co.uk>",
-        "Description": "Volcano plots represent a useful way to visualise the results of differential expression analyses. Here, we present a highly-configurable function that produces publication-ready volcano plots. EnhancedVolcano will attempt to fit as many point labels in the plot window as possible, thus avoiding 'clogging' up the plot with labels that could not otherwise have been read. Other functionality allows the user to identify up to 4 different types of attributes in the same plot space via colour, shape, size, and shade parameter configurations.",
-        "License": "GPL-3",
-        "Depends": "ggplot2, ggrepel",
-        "Imports": "methods",
-        "Suggests": "ggalt, ggrastr, RUnit, BiocGenerics, knitr, DESeq2, pasilla,\nairway, org.Hs.eg.db, gridExtra, magrittr, rmarkdown",
-        "URL": "https://github.com/kevinblighe/EnhancedVolcano",
-        "biocViews": "RNASeq, GeneExpression, Transcription,\nDifferentialExpression, ImmunoOncology",
-        "VignetteBuilder": "knitr",
-        "RoxygenNote": "7.1.2",
-        "git_url": "https://git.bioconductor.org/packages/EnhancedVolcano",
-        "git_branch": "devel",
-        "git_last_commit": "d462e8c",
-        "git_last_commit_date": "2025-04-15",
-        "Repository": "Bioconductor 3.22",
-        "Date/Publication": "2025-06-04",
-        "NeedsCompilation": "no",
-        "Packaged": "2025-06-04 23:10:19 UTC; biocbuild",
-        "Author": "Kevin Blighe [aut, cre],\n  Sharmila Rana [aut],\n  Emir Turkes [ctb],\n  Benjamin Ostendorf [ctb],\n  Andrea Grioni [ctb],\n  Myles Lewis [aut]",
-        "Built": "R 4.5.0; ; 2025-06-05 12:55:08 UTC; windows"
-      }
-    },
     "FactoMineR": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
