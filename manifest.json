@@ -2920,7 +2920,7 @@
     },
     "estimate": {
       "Source": "R-Forge",
-      "Repository": null,
+      "Repository": "http://r-forge.r-project.org",
       "description": {
         "Package": "estimate",
         "Version": "1.0.13",
