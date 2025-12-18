@@ -12,7 +12,7 @@ The dashboard enables users to:
 
 This project demonstrates applied skills in bioinformatics analysis, data visualization, reproducible research, and translational interpretation.
 
-#### Please note that the analysis is computationally heavy so it will take 30 seconds to 2 minutes depending on how many samples have been put in for the subsequent pages after the "Overview" to load up. So "Differentially Expressed Genes" and "Hallmark Pathway" will take some time to load so remain on the page as the information and filters will be able to be used after it is loaded.
+**Please note that the analysis is computationally heavy so it will take 30 seconds to 2 minutes depending on how many samples have been put in for the subsequent pages after the "Overview" to load up. So "Differentially Expressed Genes" and "Hallmark Pathway" will take some time to load so remain on the page as the information and filters will be able to be used after it is loaded.**
 ________________________________________
 ### 🎯 Scientific / Analytical Objective
 The primary goal of this project is to:
@@ -107,7 +107,7 @@ rmarkdown::run("RNASeq_Flexdashboard.Rmd")
 ```
 *This should load up the dashboard in a different window.*
 
-#### Please note upon initial run, the dashboard will not have any samples selected. To load up the dashboard with samples, you can use the dropdown to select cases by ID 
+**Please note upon initial run, the dashboard will not have any samples selected. To load up the dashboard with samples, you can use the dropdown to select cases by ID** 
 ___
 ### 📊 Example Results & Biological Insights
 Key observations from this dataset include:
