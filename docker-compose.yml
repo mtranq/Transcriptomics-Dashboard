@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  rnaseq-dashboard:
+    build: .
+    container_name: tcga-brca-dashboard
+    ports:
+      - "3838:3838"
+    restart: unless-stopped
+    # Uncomment below for development with live code changes
+    # volumes:
+    #   - ./RNASeq_Flexdashboard.Rmd:/srv/shiny-server/app/RNASeq_Flexdashboard.Rmd
+    #   - ./data:/srv/shiny-server/app/data
